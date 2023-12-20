@@ -9,9 +9,7 @@ const port = process.env.PORT || 5000
 app.use(cors())
 app.use(express.json())
 
-
 // mongoDB
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.c6bvskv.mongodb.net/?retryWrites=true&w=majority`;
 
 
@@ -28,7 +26,7 @@ async function run() {
     try {
 
         //change menuCollection with database name and collection.
-        const menuCollection = client.db('nameDB').collections("collectionName")
+        const taskCollection = client.db('taskyDB').collections("task")
 
 
         // Send a ping to confirm a successful connection
