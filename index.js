@@ -1,5 +1,5 @@
 const express = require('express')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors')
 require('dotenv').config();
 const app = express()
@@ -28,9 +28,9 @@ async function run() {
         //change menuCollection with database name and collection.
         const taskCollection = client.db('taskyDB').collection("task")
 
-        app.get('/task/:email', async (req, res) =>{
+        app.get('/task/:email', async (req, res) => {
             const email = req.params.email
-            const query = {email: email }
+            const query = { email: email }
             const result = await taskCollection.find(query).toArray()
             res.send(result)
         })
@@ -40,6 +40,33 @@ async function run() {
             const result = await taskCollection.insertOne(task)
             res.send(result)
         })
+
+        app.delete('/task/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await taskCollection.deleteOne(query)
+            res.send(result)
+        })
+
+        app.put('/task/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: new ObjectId(id) }
+            const updatedTask = req.body;
+            const task = {
+                $set: {
+                    priority: updatedTask.priority,
+                    Title: updatedTask.Title,
+                    Description: updatedTask.Description,
+                    Deadline: updatedTask.Deadline,
+                    status: updatedTask.status,
+                }
+            }
+            const result = await taskCollection.updateOne(filter, task)
+            res.send(result)
+
+        })
+
+
 
 
         // Send a ping to confirm a successful connection
