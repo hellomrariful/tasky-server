@@ -26,7 +26,20 @@ async function run() {
     try {
 
         //change menuCollection with database name and collection.
-        const taskCollection = client.db('taskyDB').collections("task")
+        const taskCollection = client.db('taskyDB').collection("task")
+
+        app.get('/task/:email', async (req, res) =>{
+            const email = req.params.email
+            const query = {email: email }
+            const result = await taskCollection.find(query).toArray()
+            res.send(result)
+        })
+
+        app.post('/task', async (req, res) => {
+            const task = req.body;
+            const result = await taskCollection.insertOne(task)
+            res.send(result)
+        })
 
 
         // Send a ping to confirm a successful connection
