@@ -51,7 +51,9 @@ async function run() {
         app.put('/task/:id', async (req, res) => {
             const id = req.params.id
             const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
             const updatedTask = req.body;
+            updatedTask.update = new Date();
             const task = {
                 $set: {
                     priority: updatedTask.priority,
@@ -59,9 +61,10 @@ async function run() {
                     Description: updatedTask.Description,
                     Deadline: updatedTask.Deadline,
                     status: updatedTask.status,
+                    update: updatedTask.update
                 }
             }
-            const result = await taskCollection.updateOne(filter, task)
+            const result = await taskCollection.updateOne(filter, task, options)
             res.send(result)
 
         })
