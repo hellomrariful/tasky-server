@@ -66,12 +66,22 @@ async function run() {
 
         })
 
-
-
+        app.patch("/task", async (req, res) => {
+            const id = req.query.id;
+            const data = req.body;
+            const query = { _id: new ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    status: data.status,
+                },
+            };
+            const result = await taskCollection.updateOne(query, updatedDoc);
+            res.send(result);
+        });
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        // await client.db("admin").command({ ping: 1 });
+        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
